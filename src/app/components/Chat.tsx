@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import styled from 'styled-components';
 import { FaTrash } from 'react-icons/fa';
-import { Message, User } from '../interfaces/types';
+import { Message, User } from '../../../interfaces/types';
+import supabase from '../../lib/supabase';
 
 const Wrapper = styled.div`
   display: flex;
@@ -110,25 +111,30 @@ const Chat: React.FC = () => {
 
   useEffect(scrollToBottom, [messages]);
 
-  const handleMessageSend = () => {
+  const handleMessageSend = async () => {
     if (messageText.trim()) {
       const newMessage: Message = {
         id: uuidv4(),
         sender: currentUser,
         text: messageText,
-        timestamp: new Date().toLocaleString('en-US', {
-          hour: 'numeric',
-          minute: 'numeric',
-          hour12: true
-        })
+        timestamp: new Date().toISOString()
       };
-      setMessages([...messages, newMessage]);
-      setMessageText('');
+  
+    const { error } = await supabase
+        .from('messages') 
+        .insert([newMessage]);
+  
+      if (error) {
+        console.error('Error inserting message:', error);
+      } else {
+        setMessages([...messages, newMessage]);
+        setMessageText('');
+      } 
     }
   };
 
   const handleClearConversation = () => {
-    setMessages([]); // clear messages
+    setMessages([]);
   };
 
   return (
@@ -137,7 +143,11 @@ const Chat: React.FC = () => {
       <MessageContainer>
         {messages.map((message) => (
           <MessageBubble key={message.id} isCurrentUser={message.sender === currentUser}>
-            <MessageSender>{message.sender} @ {message.timestamp}</MessageSender>
+            <MessageSender>{message.sender} @ {new Date(message.timestamp).toLocaleString('en-US', {
+              hour: 'numeric',
+              minute: 'numeric',
+              hour12: true
+            })} </MessageSender>
             <MessageText>{message.text}</MessageText>
           </MessageBubble>
         ))}
@@ -148,6 +158,7 @@ const Chat: React.FC = () => {
         value={messageText}
         onChange={(e) => setMessageText(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' && handleMessageSend()}
+        placeholder="Type a message..."
       />
       <UserSelector value={currentUser} onChange={e => setCurrentUser(e.target.value as User)}>
         <option value="patient">Patient</option>
