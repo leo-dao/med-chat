@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
+import UserSelector from './UserSelector';
+import MessageInput from './MessageInput';
+import MessageList from './MessageList';
 import { v4 as uuidv4 } from 'uuid';
 import styled from 'styled-components';
 import { FaTrash } from 'react-icons/fa';
@@ -39,63 +42,6 @@ const ClearButton = styled.button`
 
     background-color: #d32f2f;
   }
-`;
-
-const MessageContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  overflow-y: auto;
-`;
-
-const MessageBubble = styled.div<{ isCurrentUser: boolean }>`
-  padding: 10px;
-  border-radius: 10px;
-  background-color: ${({ isCurrentUser }) => (isCurrentUser ? '#dcf8c6' : '#ffffff')};
-  align-self: ${({ isCurrentUser }) => (isCurrentUser ? 'flex-end' : 'flex-start')};
-  border: ${({ isCurrentUser }) => (isCurrentUser ? '2px solid #34b7f1' : '2px solid #eee')};
-`;
-
-const MessageSender = styled.div`
-  font-size: 12px;
-  color: black;
-
-  &::first-letter {
-    text-transform: uppercase;
-  }
-`;
-
-const MessageText = styled.div`
-  font-size: 16px;
-`;
-
-const Input = styled.input`
-  padding: 10px;
-  margin-top: 10px;
-  border-radius: 20px;
-  border: 1px solid #ccc;
-  flex-grow: 1;
-  margin-right: 10px;
-`;
-
-const SendButton = styled.button`
-  padding: 10px 20px;
-  border-radius: 20px;
-  border: none;
-  background-color: #34b7f1;
-  color: white;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #289ae2;
-  }
-`;
-
-const UserSelector = styled.select`
-  padding: 8px;
-  margin-bottom: 10px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
 `;
 
 const Chat: React.FC = () => {
@@ -140,31 +86,13 @@ const Chat: React.FC = () => {
   return (
     <Wrapper>
       <Title>Med Chat</Title>
-      <MessageContainer>
-        {messages.map((message) => (
-          <MessageBubble key={message.id} isCurrentUser={message.sender === currentUser}>
-            <MessageSender>{message.sender} @ {new Date(message.timestamp).toLocaleString('en-US', {
-              hour: 'numeric',
-              minute: 'numeric',
-              hour12: true
-            })} </MessageSender>
-            <MessageText>{message.text}</MessageText>
-          </MessageBubble>
-        ))}
+
+      <MessageList messages={messages} currentUser={currentUser} />
+
       <div ref={messagesEndRef} />
-      </MessageContainer>
-      <Input
-        type="text"
-        value={messageText}
-        onChange={(e) => setMessageText(e.target.value)}
-        onKeyDown={(e) => e.key === 'Enter' && handleMessageSend()}
-        placeholder="Type a message..."
-      />
-      <UserSelector value={currentUser} onChange={e => setCurrentUser(e.target.value as User)}>
-        <option value="patient">Patient</option>
-        <option value="doctor">Doctor</option>
-      </UserSelector>
-      <SendButton onClick={handleMessageSend}>Send</SendButton>
+
+      <MessageInput onSend={handleMessageSend} messageText={messageText} setMessageText={setMessageText} />
+      <UserSelector value={currentUser} onChange={(user) => setCurrentUser(user)} />
       {messages.length > 0 && (
         <ClearButton onClick={handleClearConversation}>
           <FaTrash /> Clear Chat
