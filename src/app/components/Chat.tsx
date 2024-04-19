@@ -21,8 +21,13 @@ const Wrapper = styled.div`
   justify-content: space-between;
 `;
 
-const Title = styled.h1`
+const Title = styled.div`
+  padding-bottom: 10px;
   text-align: center;
+  margin-bottom: 50px;
+  font-size: 40px;
+  font-weight: bold;
+  border-bottom: 1px solid #ccc;
 `;
 
 const ClearButton = styled.button`
@@ -90,8 +95,8 @@ const Chat: React.FC = () => {
       <MessageList messages={messages} currentUser={currentUser} />
 
       <div ref={messagesEndRef} />
-
       <MessageInput onSend={handleMessageSend} messageText={messageText} setMessageText={setMessageText} />
+      <br />
       <UserSelector value={currentUser} onChange={(user) => setCurrentUser(user)} />
       {messages.length > 0 && (
         <ClearButton onClick={handleClearConversation}>
