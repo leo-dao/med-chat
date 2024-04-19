@@ -22,7 +22,10 @@ Welcome to the Med-Chat App, a real-time messaging application built with Next.j
     npm install
 
 3. **Set up environment variables:**
-Copy the .env.example file to a new file called .env.local and fill in the necessary Supabase credentials.
+Fill in Supabase credentials in a .env.local file at the root of the directory:
+    ```bash
+    NEXT_PUBLIC_SUPABASE_URL=yourURL
+    NEXT_PUBLIC_SUPABASE_ANON_KEY=yourKEY
 
 
 4. **Run the development server:**
