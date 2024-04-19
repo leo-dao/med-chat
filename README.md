@@ -1,6 +1,6 @@
 # Chat App 📱💬
 
-Welcome to the Med-Chat App, a real-time messaging application built with Next.js and styled-components. This application allows patients and doctors to send messages instantly and view them as they come in. User can switch between patient and doctor perspectives which modifies the UI. All messages are stored in the backend via Supabase. Image upload functionality is in the works 🔨🔨
+Welcome to the Med-Chat App, a real-time messaging application built with Next.js and styled-components. This application allows patients and doctors to send messages instantly and view them as they come in, as well as to clear existing messages. User can switch between patient and doctor perspectives which modifies the UI. All messages are stored in the backend via Supabase. Image upload functionality is in the works 🔨🔨
 
 ## Technologies Used 🛠️
 
